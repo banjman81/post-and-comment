@@ -8,10 +8,10 @@ const errorHandler = require('../../util/errorHandler/errorHandler')
 async function createUser(req, res){
     let body = req.body
     const {firstName, lastName, username, email, password} = body
-    let salt = await bcrypt.genSalt(10)
-    let hashed = await bcrypt.hash(password, salt)
 
     try{
+        let salt = await bcrypt.genSalt(10)
+        let hashed = await bcrypt.hash(password, salt)
         const createdUser = new User({
             firstName,
             lastName,

@@ -16,7 +16,7 @@ function errorHandler(err) {
         switch (err.code) {
             case 11000:
             case 11001:
-            message = parsedErrorMessage(err);
+            message = parsedErrorMessage(err)
             break;
             default:
             message = "Something went wrong, please contact support!";
