@@ -61,7 +61,87 @@ async function createComment(req, res){
     }
 }
 
+async function updateComment(req, res){
+    try{
+
+        let foundComment = await Comment.findById(req.params.id)
+
+        if(!foundComment){
+            return res.status(404).json({
+                message: "failure",
+                error: 'Commment not found'
+            })
+        }else{
+
+            let owner = await User.findById(foundComment.commentOwner)
+            console.log(foundComment.commentOwner)
+            
+            let decodedData = res.locals.decodedData
+            if(owner.email === decodedData.email){
+
+                let updatedComment = await Comment.findByIdAndUpdate(req.params.id, req.body, {new : true})
+
+                res.json({
+                    message : 'success',
+                    payload : updatedComment
+                })
+
+            }else{
+                res.status(500).json({
+                    message : 'failed',
+                    payload : 'You are not authorized to update this content'
+                })
+            }
+        }
+            
+
+    }catch(e){
+        res.status(500).json(errorHandler(e))
+    }
+}
+
+async function deleteComment(req, res){
+    try{
+
+        let foundComment = await Comment.findById(req.params.id)
+
+        if(!foundComment){
+            return res.status(404).json({
+                message: "failure",
+                error: 'Commment not found'
+            })
+        }else{
+
+            let owner = await User.findById(foundComment.commentOwner)
+            console.log(foundComment.commentOwner)
+            
+            let decodedData = res.locals.decodedData
+            if(owner.email === decodedData.email){
+
+                let deletedComment = await Comment.findByIdAndDelete(req.params.id)
+
+                res.json({
+                    message : 'success',
+                    payload : deletedComment
+                })
+
+            }else{
+                res.status(500).json({
+                    message : 'failed',
+                    payload : 'You are not authorized to update this content'
+                })
+            }
+        }
+            
+
+    }catch(e){
+        res.status(500).json(errorHandler(e))
+    }
+}
+
 module.exports = {
     getAllComment,
-    createComment
+    createComment,
+    updateComment,
+    deleteComment
 }

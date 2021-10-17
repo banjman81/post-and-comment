@@ -61,12 +61,24 @@ async function updatePost(req, res){
                 error: 'Post not found'
             })
         }else{
-            let updatedOrder = await Post.findByIdAndUpdate(req.params.id, req.body, {new : true})
 
-            res.json({
-                message: 'success',
-                payload : updatedOrder
-            })
+            let owner = await User.findById(foundPost.postOwner)
+
+            let decodedData = res.locals.decodedData
+
+            if(owner.email === decodedData.email){
+                let updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {new : true})
+
+                res.json({
+                    message: 'success',
+                    payload : updatedPost
+                })
+            }else{
+                res.status(500).json({
+                    message : 'failed',
+                    payload : 'You are not authorized to update this content'
+                })
+            }
         }
     }catch(e){
         return res.status(500).json(errorHandler(e))
